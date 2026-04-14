@@ -12,4 +12,6 @@ class Movies(
     fun isInclude(movie: Movie): Boolean = value.contains(movie)
 
     fun findByTitle(title: String): Movie? = value.find { it.title == title }
+
+    fun findById(id: Long): Movie? = value.find { it.id == id }
 }

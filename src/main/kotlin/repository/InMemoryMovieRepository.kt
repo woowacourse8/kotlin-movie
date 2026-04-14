@@ -12,4 +12,9 @@ object InMemoryMovieRepository : MovieRepository {
 
     override fun getMovies(): Movies =
         Movies(listOf(F1_THE_MOVIE, TOY_STORY, IRON_MAN, ROBOT_DREAM))
+
+    override fun findById(id: Long): Movie? {
+        val movies = getMovies()
+        return movies.findById(id)
+    }
 }

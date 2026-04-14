@@ -12,7 +12,7 @@
 
 ### 데이터 접근 계층 (Repository / DAO) 구현
 
-- [ ] MovieRepository: 데이터베이스(Movies 테이블)에서 영화 정보를 조회하여 도메인 객체로 반환
+- [x] MovieRepository: 데이터베이스(Movies 테이블)에서 영화 정보를 조회하여 도메인 객체로 반환
 - [ ] ScreeningRepository: 특정 날짜를 기준으로 데이터베이스(Screenings 테이블)에서 상영 회차 목록을 조회
 - [ ] ReservationRepository:
   - 신규 예매 내역(결제 완료된 예약)을 데이터베이스(Reservation 테이블)에 저장(INSERT)
