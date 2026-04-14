@@ -10,13 +10,13 @@ import model.reservation.Reservation
 import model.reservation.Reservations
 import model.screening.Screening
 import model.screening.Screenings
-import repository.MovieRepository
-import repository.ScreeningRepository
+import repository.InMemoryMovieRepository
+import repository.InMemoryScreeningRepository
 import view.InputView
 import view.OutputView
 
 class MovieReservationController(
-    private val screeningRepo: ScreeningRepository,
+    private val screeningRepo: InMemoryScreeningRepository,
     private val inputView: InputView,
     private val outputView: OutputView,
 ) {
@@ -86,7 +86,7 @@ class MovieReservationController(
     private fun searchMovie(): Movie {
         while (true) {
             val title = inputView.readMovieTitle()
-            val movie = MovieRepository.getMovies().findByTitle(title)
+            val movie = InMemoryMovieRepository.getMovies().findByTitle(title)
             if (movie != null) return movie
             outputView.printMovieNotSearch()
         }

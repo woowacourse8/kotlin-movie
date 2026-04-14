@@ -1,11 +1,11 @@
 import controller.MovieReservationController
-import repository.ScreeningRepository
+import repository.InMemoryScreeningRepository
 import view.InputView
 import view.OutputView
 
 fun main() {
     MovieReservationController(
-        screeningRepo = ScreeningRepository(),
+        screeningRepo = InMemoryScreeningRepository(),
         inputView = InputView,
         outputView = OutputView,
     ).run()

@@ -7,17 +7,17 @@ import model.movie.RunningTime
 import model.seat.SeatNumber
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import repository.MovieRepository.F1_THE_MOVIE
-import repository.MovieRepository.IRON_MAN
+import repository.InMemoryMovieRepository.F1_THE_MOVIE
+import repository.InMemoryMovieRepository.IRON_MAN
 import java.time.LocalDate
 
-class ScreeningRepositoryTest {
+class InMemoryScreeningRepositoryTest {
     private val baseDate: LocalDate = LocalDate.of(2025, 9, 20)
 
     @Test
     fun `특정 영화와 날짜에 해당하는 상영 정보를 찾을 수 있다`() {
         // given
-        val repository = ScreeningRepository()
+        val repository = InMemoryScreeningRepository()
 
         // when
         val screenings = repository.findBy(F1_THE_MOVIE, baseDate)
@@ -30,8 +30,8 @@ class ScreeningRepositoryTest {
     @Test
     fun `해당하는 상영 정보가 없으면 빈 결과를 반환한다`() {
         // given
-        val repository = ScreeningRepository()
-        val otherMovie = Movie("없는 영화", RunningTime(100))
+        val repository = InMemoryScreeningRepository()
+        val otherMovie = Movie(title = "없는 영화", runningTime = RunningTime(100))
         val otherDate = LocalDate.of(2100, 1, 1)
 
         // when
@@ -46,7 +46,7 @@ class ScreeningRepositoryTest {
     @Test
     fun `상영 정보를 업데이트할 수 있다`() {
         // given
-        val repository = ScreeningRepository()
+        val repository = InMemoryScreeningRepository()
         val targetScreening = repository.findBy(IRON_MAN, baseDate).first()
         val seatNumber = SeatNumber('A', 1)
 
@@ -64,7 +64,7 @@ class ScreeningRepositoryTest {
     @Test
     fun `업데이트 시 다른 상영 정보는 영향을 받지 않는다`() {
         // given
-        val repository = ScreeningRepository()
+        val repository = InMemoryScreeningRepository()
         val fMovieScreenings = repository.findBy(F1_THE_MOVIE, baseDate)
         val targetScreening = fMovieScreenings.first()
         val otherScreeningBefore = fMovieScreenings.toList()[1]
