@@ -15,8 +15,8 @@ class ScreeningsTest {
     private val movie = Movie(title = "테스트", runningTime = RunningTime(100))
     private val seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen1)
     private val date = LocalDate.of(2026, 4, 12)
-    private val screening1 = Screening(movie, LocalDateTime.of(date, LocalTime.of(12, 0)), seatMap)
-    private val screening2 = Screening(movie, LocalDateTime.of(date, LocalTime.of(15, 0)), seatMap)
+    private val screening1 = Screening(movie = movie, startDateTime = LocalDateTime.of(date, LocalTime.of(12, 0)), seatMap = seatMap)
+    private val screening2 = Screening(movie = movie, startDateTime = LocalDateTime.of(date, LocalTime.of(15, 0)), seatMap = seatMap)
 
     @Test
     fun `빈 리스트로 생성하면 isEmpty 가 true 를 반환한다`() {

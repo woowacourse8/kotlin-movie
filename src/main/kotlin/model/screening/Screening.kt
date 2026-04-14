@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Screening(
+    val id: Long? = null,
     val movie: Movie,
     val startDateTime: LocalDateTime,
     val seatMap: ScreeningSeatMap,

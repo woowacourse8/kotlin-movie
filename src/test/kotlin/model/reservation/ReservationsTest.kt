@@ -36,17 +36,17 @@ class ReservationsTest {
 
     private fun screening1(startHour: Int): Screening =
         Screening(
-            movie1,
-            LocalDateTime.of(date, LocalTime.of(startHour, 0)),
-            ScreeningSeatMap(defaultScreen),
+            movie = movie1,
+            startDateTime = LocalDateTime.of(date, LocalTime.of(startHour, 0)),
+            seatMap = ScreeningSeatMap(defaultScreen),
         )
 
     @Suppress("SameParameterValue")
     private fun screening2(startHour: Int): Screening =
         Screening(
-            movie2,
-            LocalDateTime.of(date, LocalTime.of(startHour, 0)),
-            ScreeningSeatMap(defaultScreen),
+            movie = movie2,
+            startDateTime = LocalDateTime.of(date, LocalTime.of(startHour, 0)),
+            seatMap = ScreeningSeatMap(defaultScreen),
         )
 
     @Test

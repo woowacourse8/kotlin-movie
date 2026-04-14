@@ -29,51 +29,51 @@ class InMemoryScreeningRepository(
         private val BASE_DATE: LocalDate = LocalDate.of(2025, 9, 20)
         private val fMovie1 =
             Screening(
-                F1_THE_MOVIE,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(10, 20)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen1),
+                movie = F1_THE_MOVIE,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(10, 20)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen1),
             )
         private val fMovie2 =
             Screening(
-                F1_THE_MOVIE,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(13, 0)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen1),
+                movie = F1_THE_MOVIE,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(13, 0)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen1),
             )
         private val fMovie3 =
             Screening(
-                F1_THE_MOVIE,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(15, 40)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen1),
+                movie = F1_THE_MOVIE,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(15, 40)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen1),
             )
         private val fMovie4 =
             Screening(
-                F1_THE_MOVIE,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(20, 10)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen1),
+                movie = F1_THE_MOVIE,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(20, 10)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen1),
             )
         private val tMovie1 =
             Screening(
-                TOY_STORY,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(13, 30)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen2),
+                movie = TOY_STORY,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(13, 30)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen2),
             )
         private val tMovie2 =
             Screening(
-                TOY_STORY,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(16, 0)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen2),
+                movie = TOY_STORY,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(16, 0)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen2),
             )
         private val iMovie1 =
             Screening(
-                IRON_MAN,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(9, 50)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen3),
+                movie = IRON_MAN,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(9, 50)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen3),
             )
         private val rMovie1 =
             Screening(
-                ROBOT_DREAM,
-                LocalDateTime.of(BASE_DATE, LocalTime.of(21, 0)),
-                ScreeningSeatMap(InMemoryScreenRepository.screen3),
+                movie = ROBOT_DREAM,
+                startDateTime = LocalDateTime.of(BASE_DATE, LocalTime.of(21, 0)),
+                seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen3),
             )
 
         private fun createScreenings(): List<Screening> = listOf(fMovie1, fMovie2, fMovie3, fMovie4, tMovie1, tMovie2, iMovie1, rMovie1)

@@ -23,7 +23,7 @@ class DiscountSystemTest {
     private val movie = Movie(title = "테스트 영화", runningTime = RunningTime(120))
     private val seats = Seats(listOf(Seat(SeatNumber(row = 'C', column = 1), SeatGrade.S))) // 18,000원
     private val screen = Screen(screenName = "1관", seats = seats)
-    private val screening = Screening(movie, LocalDateTime.of(2026, 4, 13, 12, 0), ScreeningSeatMap(screen))
+    private val screening = Screening(movie = movie, startDateTime = LocalDateTime.of(2026, 4, 13, 12, 0), seatMap = ScreeningSeatMap(screen))
     private val reservations = Reservations(listOf(Reservation(screening, seats)))
 
     class FakeAmountDiscountPolicy(
