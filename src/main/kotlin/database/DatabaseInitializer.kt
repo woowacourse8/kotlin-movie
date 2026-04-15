@@ -78,6 +78,18 @@ object DatabaseInitializer {
 
                 insertStatement.execute(insertSql)
             }
+
+            // 5. 초기 예약 테이블 없으면 생성
+            conn.createStatement().use { statement ->
+                val sql = """
+                    CREATE TABLE IF NOT EXISTS reservation (
+                    screening_id BIGINT,
+                    seats VARCHAR(255)
+                    )
+                """.trimIndent()
+
+                statement.execute(sql)
+            }
         }
     }
 }

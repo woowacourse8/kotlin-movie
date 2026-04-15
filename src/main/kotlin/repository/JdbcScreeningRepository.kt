@@ -10,7 +10,8 @@ import java.time.LocalDateTime
 
 class JdbcScreeningRepository(
     private val isLocal: Boolean,
-    private val screenRepository: ScreenRepository
+    private val screenRepository: ScreenRepository,
+    private val movieRepository: MovieRepository,
 ) : ScreeningRepository {
     override fun findBy(
         movie: Movie,
@@ -58,5 +59,44 @@ class JdbcScreeningRepository(
             }
         }
         return Screenings(screenings)
+    }
+
+    override fun findById(id: Long): Screening? {
+        val connection = DatabaseConnectionFactory.createConnection(isLocal)
+
+        connection.use { conn ->
+            val sql = """
+                SELECT *
+                FROM screening
+                WHERE id = ?
+            """.trimIndent()
+
+            conn.prepareStatement(sql).use { pStatement ->
+                pStatement.setLong(1, id)
+
+                val resultSet = pStatement.executeQuery()
+
+                if (resultSet.next()) {
+                    val movieId = resultSet.getLong("movie_id")
+                    val movie = requireNotNull(movieRepository.findById(movieId)) {
+                        "영화 DB에 영화 아이디($movieId)인 영화가 없습니다."
+                    }
+                    val startDateTime =
+                        resultSet.getObject("start_date_time", LocalDateTime::class.java)
+                    val screenName = resultSet.getString("screen_name")
+                    val screen = requireNotNull(screenRepository.findByName(screenName)) {
+                        "스크린 DB에 해당 스크린 이름($screenName)을 가진 스크린이 없습니다."
+                    }
+
+                    return Screening(
+                        id = id,
+                        movie = movie,
+                        startDateTime = startDateTime,
+                        seatMap = ScreeningSeatMap(screen)
+                    )
+                }
+            }
+        }
+        return null
     }
 }

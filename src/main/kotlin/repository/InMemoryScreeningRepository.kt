@@ -20,6 +20,8 @@ class InMemoryScreeningRepository(
         date: LocalDate,
     ): Screenings = Screenings(screenings.filter { it.movie == movie && it.showDate == date })
 
+    override fun findById(id: Long): Screening? = screenings.find { it.id == id }
+
     fun update(newScreening: Screening) {
         screenings =
             Screenings(screenings.map { if (it.isSameScreening(newScreening)) newScreening else it })
