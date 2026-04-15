@@ -53,7 +53,7 @@ object DatabaseInitializer {
                     CREATE TABLE IF NOT EXISTS screening (
                     id BIGINT AUTO_INCREMENT(101, 1) PRIMARY KEY,
                     movie_id BIGINT,
-                    start_date_time DATETIME,
+                    start_date_time TIMESTAMP,
                     screen_name VARCHAR(255)
                     )
                     """.trimIndent()
@@ -78,13 +78,13 @@ object DatabaseInitializer {
                             """
                             INSERT INTO screening (movie_id, start_date_time, screen_name)
                             VALUES
-                            (1, '2025-09-20 10:20:00', '1관')
-                            (1, '2025-09-20 13:00:00', '1관')
-                            (1, '2025-09-20 15:40:00', '1관')
-                            (1, '2025-09-20 20:10:00', '1관')
-                            (2, '2025-09-20 13:30:00', '2관')
-                            (2, '2025-09-20 16:00:00', '2관')
-                            (3, '2025-09-20 09:50:00', '3관')
+                            (1, '2025-09-20 10:20:00', '1관'),
+                            (1, '2025-09-20 13:00:00', '1관'),
+                            (1, '2025-09-20 15:40:00', '1관'),
+                            (1, '2025-09-20 20:10:00', '1관'),
+                            (2, '2025-09-20 13:30:00', '2관'),
+                            (2, '2025-09-20 16:00:00', '2관'),
+                            (3, '2025-09-20 09:50:00', '3관'),
                             (4, '2025-09-20 21:00:00', '3관')
                             """.trimIndent()
 
