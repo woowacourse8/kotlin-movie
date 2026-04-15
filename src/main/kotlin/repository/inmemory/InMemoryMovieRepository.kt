@@ -1,8 +1,9 @@
-package repository
+package repository.inmemory
 
 import model.movie.Movie
 import model.movie.Movies
 import model.movie.RunningTime
+import repository.MovieRepository
 
 object InMemoryMovieRepository : MovieRepository {
     val F1_THE_MOVIE = Movie(title = "F1 더 무비", runningTime = RunningTime(160))
@@ -10,8 +11,7 @@ object InMemoryMovieRepository : MovieRepository {
     val IRON_MAN = Movie(title = "아이언맨", runningTime = RunningTime(130))
     val ROBOT_DREAM = Movie(title = "로봇 드림", runningTime = RunningTime(110))
 
-    override fun getMovies(): Movies =
-        Movies(listOf(F1_THE_MOVIE, TOY_STORY, IRON_MAN, ROBOT_DREAM))
+    override fun getMovies(): Movies = Movies(listOf(F1_THE_MOVIE, TOY_STORY, IRON_MAN, ROBOT_DREAM))
 
     override fun findById(id: Long): Movie? {
         val movies = getMovies()

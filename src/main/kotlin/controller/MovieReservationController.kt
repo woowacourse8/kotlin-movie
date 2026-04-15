@@ -10,8 +10,8 @@ import model.reservation.Reservation
 import model.reservation.Reservations
 import model.screening.Screening
 import model.screening.Screenings
-import repository.InMemoryMovieRepository
-import repository.InMemoryScreeningRepository
+import repository.inmemory.InMemoryMovieRepository
+import repository.inmemory.InMemoryScreeningRepository
 import view.InputView
 import view.OutputView
 

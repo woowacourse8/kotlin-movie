@@ -7,8 +7,9 @@ import model.movie.RunningTime
 import model.seat.SeatNumber
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import repository.InMemoryMovieRepository.F1_THE_MOVIE
-import repository.InMemoryMovieRepository.IRON_MAN
+import repository.inmemory.InMemoryMovieRepository.F1_THE_MOVIE
+import repository.inmemory.InMemoryMovieRepository.IRON_MAN
+import repository.inmemory.InMemoryScreeningRepository
 import java.time.LocalDate
 
 class InMemoryScreeningRepositoryTest {

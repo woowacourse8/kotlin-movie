@@ -1,10 +1,13 @@
-package repository
+package repository.jdbc
 
 import database.DatabaseConnectionFactory
 import model.movie.Movie
 import model.screening.Screening
 import model.screening.ScreeningSeatMap
 import model.screening.Screenings
+import repository.MovieRepository
+import repository.ScreenRepository
+import repository.ScreeningRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -15,23 +18,24 @@ class JdbcScreeningRepository(
 ) : ScreeningRepository {
     override fun findBy(
         movie: Movie,
-        date: LocalDate
+        date: LocalDate,
     ): Screenings {
         val connection = DatabaseConnectionFactory.createConnection(isLocal = isLocal)
         val screenings = mutableListOf<Screening>()
 
         connection.use { conn ->
-            val sql = """
+            val sql =
+                """
                 SELECT *
                 FROM screening
                 WHERE movie_id = ?
                 AND CAST(start_date_time AS DATE) = ?
-            """.trimIndent()
+                """.trimIndent()
 
             conn.prepareStatement(sql).use { pStatement ->
                 pStatement.setLong(
                     1,
-                    requireNotNull(movie.id) { "DB에 저장된 영화 ID(${movie.id})를 찾을 수 없습니다." }
+                    requireNotNull(movie.id) { "DB에 저장된 영화 ID(${movie.id})를 찾을 수 없습니다." },
                 )
                 pStatement.setObject(2, date)
 
@@ -43,17 +47,18 @@ class JdbcScreeningRepository(
                         resultSet.getObject("start_date_time", LocalDateTime::class.java)
                     val screenName = resultSet.getString("screen_name")
 
-                    val screen = requireNotNull(screenRepository.findByName(screenName)) {
-                        "DB에 저장된 상영관 이름($screenName)을 찾을 수 없습니다."
-                    }
+                    val screen =
+                        requireNotNull(screenRepository.findByName(screenName)) {
+                            "DB에 저장된 상영관 이름($screenName)을 찾을 수 없습니다."
+                        }
 
                     screenings.add(
                         Screening(
                             id = id,
                             movie = movie,
                             startDateTime = startDateTime,
-                            seatMap = ScreeningSeatMap(screen)
-                        )
+                            seatMap = ScreeningSeatMap(screen),
+                        ),
                     )
                 }
             }
@@ -65,11 +70,12 @@ class JdbcScreeningRepository(
         val connection = DatabaseConnectionFactory.createConnection(isLocal)
 
         connection.use { conn ->
-            val sql = """
+            val sql =
+                """
                 SELECT *
                 FROM screening
                 WHERE id = ?
-            """.trimIndent()
+                """.trimIndent()
 
             conn.prepareStatement(sql).use { pStatement ->
                 pStatement.setLong(1, id)
@@ -78,21 +84,23 @@ class JdbcScreeningRepository(
 
                 if (resultSet.next()) {
                     val movieId = resultSet.getLong("movie_id")
-                    val movie = requireNotNull(movieRepository.findById(movieId)) {
-                        "영화 DB에 영화 아이디($movieId)인 영화가 없습니다."
-                    }
+                    val movie =
+                        requireNotNull(movieRepository.findById(movieId)) {
+                            "영화 DB에 영화 아이디($movieId)인 영화가 없습니다."
+                        }
                     val startDateTime =
                         resultSet.getObject("start_date_time", LocalDateTime::class.java)
                     val screenName = resultSet.getString("screen_name")
-                    val screen = requireNotNull(screenRepository.findByName(screenName)) {
-                        "스크린 DB에 해당 스크린 이름($screenName)을 가진 스크린이 없습니다."
-                    }
+                    val screen =
+                        requireNotNull(screenRepository.findByName(screenName)) {
+                            "스크린 DB에 해당 스크린 이름($screenName)을 가진 스크린이 없습니다."
+                        }
 
                     return Screening(
                         id = id,
                         movie = movie,
                         startDateTime = startDateTime,
-                        seatMap = ScreeningSeatMap(screen)
+                        seatMap = ScreeningSeatMap(screen),
                     )
                 }
             }

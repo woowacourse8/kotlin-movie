@@ -1,13 +1,14 @@
-package repository
+package repository.inmemory
 
 import model.movie.Movie
 import model.screening.Screening
 import model.screening.ScreeningSeatMap
 import model.screening.Screenings
-import repository.InMemoryMovieRepository.F1_THE_MOVIE
-import repository.InMemoryMovieRepository.IRON_MAN
-import repository.InMemoryMovieRepository.ROBOT_DREAM
-import repository.InMemoryMovieRepository.TOY_STORY
+import repository.ScreeningRepository
+import repository.inmemory.InMemoryMovieRepository.F1_THE_MOVIE
+import repository.inmemory.InMemoryMovieRepository.IRON_MAN
+import repository.inmemory.InMemoryMovieRepository.ROBOT_DREAM
+import repository.inmemory.InMemoryMovieRepository.TOY_STORY
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -78,7 +79,6 @@ class InMemoryScreeningRepository(
                 seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen3),
             )
 
-        private fun createScreenings(): List<Screening> =
-            listOf(fMovie1, fMovie2, fMovie3, fMovie4, tMovie1, tMovie2, iMovie1, rMovie1)
+        private fun createScreenings(): List<Screening> = listOf(fMovie1, fMovie2, fMovie3, fMovie4, tMovie1, tMovie2, iMovie1, rMovie1)
     }
 }

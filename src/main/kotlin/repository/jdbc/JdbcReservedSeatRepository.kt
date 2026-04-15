@@ -1,27 +1,33 @@
-package repository
+package repository.jdbc
 
 import database.DatabaseConnectionFactory
 import model.screening.Screening
 import model.seat.Seat
 import model.seat.SeatNumber
 import model.seat.Seats
+import repository.ReservedSeatRepository
 
 class JdbcReservedSeatRepository(
     private val isLocal: Boolean,
 ) : ReservedSeatRepository {
-    override fun save(screening: Screening, seats: Seats) {
+    override fun save(
+        screening: Screening,
+        seats: Seats,
+    ) {
         val connection = DatabaseConnectionFactory.createConnection(isLocal)
 
         connection.use { conn ->
-            val sql = """
+            val sql =
+                """
                 INSERT INTO reserved_seat (screening_id, reserved_seats)
                 VALUES (?, ?)
-            """.trimIndent()
+                """.trimIndent()
 
             conn.prepareStatement(sql).use { pStatement ->
-                val screeningId = requireNotNull(screening.id) {
-                    "회차에 아이디가 없습니다."
-                }
+                val screeningId =
+                    requireNotNull(screening.id) {
+                        "회차에 아이디가 없습니다."
+                    }
                 val reservedSeats = seats.seatNumbers.joinToString(",") { "${it.row}${it.column}" }
 
                 pStatement.setLong(1, screeningId)
@@ -37,27 +43,34 @@ class JdbcReservedSeatRepository(
         val seats = mutableListOf<Seat>()
 
         connection.use { conn ->
-            val sql = """
+            val sql =
+                """
                 SELECT *
                 FROM reserved_seat r
                 WHERE r.screening_id = ?
-            """.trimIndent()
+                """.trimIndent()
 
             conn.prepareStatement(sql).use { pStatement ->
-                val screeningId = requireNotNull(screening.id) {
-                    "회차에 아이디가 없습니다."
-                }
+                val screeningId =
+                    requireNotNull(screening.id) {
+                        "회차에 아이디가 없습니다."
+                    }
 
                 pStatement.setLong(1, screeningId)
                 val resultSet = pStatement.executeQuery()
 
                 while (resultSet.next()) {
-                    val reservedSeats = resultSet.getString("reserved_seats")
-                        .split(",")
-                        .map { it.trim() }
-                        .filter { it.isNotEmpty() }
-                        .map { SeatNumber(it[0], it.substring(1).toInt()) }
-                        .map { screening.seatMap.screen.seats.findSeat(it) }
+                    val reservedSeats =
+                        resultSet
+                            .getString("reserved_seats")
+                            .split(",")
+                            .map { it.trim() }
+                            .filter { it.isNotEmpty() }
+                            .map { SeatNumber(it[0], it.substring(1).toInt()) }
+                            .map {
+                                screening.seatMap.screen.seats
+                                    .findSeat(it)
+                            }
 
                     seats.addAll(reservedSeats)
                 }

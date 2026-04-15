@@ -1,5 +1,5 @@
 import controller.MovieReservationController
-import repository.InMemoryScreeningRepository
+import repository.inmemory.InMemoryScreeningRepository
 import view.InputView
 import view.OutputView
 

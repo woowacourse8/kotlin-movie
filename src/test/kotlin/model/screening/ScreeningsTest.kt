@@ -6,7 +6,7 @@ import model.movie.Movie
 import model.movie.RunningTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import repository.InMemoryScreenRepository
+import repository.inmemory.InMemoryScreenRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

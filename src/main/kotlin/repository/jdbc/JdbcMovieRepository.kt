@@ -1,20 +1,24 @@
-package repository
+package repository.jdbc
 
 import database.DatabaseConnectionFactory
 import model.movie.Movie
 import model.movie.Movies
 import model.movie.RunningTime
+import repository.MovieRepository
 
-class JdbcMovieRepository(private val isLocal: Boolean) : MovieRepository {
+class JdbcMovieRepository(
+    private val isLocal: Boolean,
+) : MovieRepository {
     override fun getMovies(): Movies {
         val connection = DatabaseConnectionFactory.createConnection(isLocal = isLocal)
         val movies = mutableListOf<Movie>()
 
         connection.use { conn ->
             conn.createStatement().use { statement ->
-                val sql = """
+                val sql =
+                    """
                     SELECT * FROM movie
-                """.trimIndent()
+                    """.trimIndent()
 
                 val resultSet = statement.executeQuery(sql)
 
@@ -27,8 +31,8 @@ class JdbcMovieRepository(private val isLocal: Boolean) : MovieRepository {
                         Movie(
                             id = id,
                             title = title,
-                            runningTime = RunningTime(runningTime)
-                        )
+                            runningTime = RunningTime(runningTime),
+                        ),
                     )
                 }
             }
