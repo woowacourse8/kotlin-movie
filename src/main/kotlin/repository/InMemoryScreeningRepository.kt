@@ -14,13 +14,13 @@ import java.time.LocalTime
 
 class InMemoryScreeningRepository(
     private var screenings: Screenings = Screenings(createScreenings()),
-): ScreeningRepository {
+) : ScreeningRepository {
     override fun findBy(
         movie: Movie,
         date: LocalDate,
     ): Screenings = Screenings(screenings.filter { it.movie == movie && it.showDate == date })
 
-    override fun update(newScreening: Screening) {
+    fun update(newScreening: Screening) {
         screenings =
             Screenings(screenings.map { if (it.isSameScreening(newScreening)) newScreening else it })
     }
@@ -76,6 +76,7 @@ class InMemoryScreeningRepository(
                 seatMap = ScreeningSeatMap(InMemoryScreenRepository.screen3),
             )
 
-        private fun createScreenings(): List<Screening> = listOf(fMovie1, fMovie2, fMovie3, fMovie4, tMovie1, tMovie2, iMovie1, rMovie1)
+        private fun createScreenings(): List<Screening> =
+            listOf(fMovie1, fMovie2, fMovie3, fMovie4, tMovie1, tMovie2, iMovie1, rMovie1)
     }
 }

@@ -9,7 +9,7 @@ object DatabaseInitializer {
             conn.createStatement().use { statement ->
                 val sql = """
                     CREATE TABLE IF NOT EXISTS movie (
-                    id BIGINT AUTO_INCREMENT,
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR(255),
                     running_time BIGINT
                     )
@@ -51,9 +51,10 @@ object DatabaseInitializer {
             conn.createStatement().use { statement ->
                 val sql = """
                     CREATE TABLE IF NOT EXISTS screening (
-                    id BIGINT AUTO_INCREMENT(101, 1)
-                    movie_id BIGINT
-                    start_date_time DATETIME
+                    id BIGINT AUTO_INCREMENT(101, 1) PRIMARY KEY,
+                    movie_id BIGINT,
+                    start_date_time DATETIME,
+                    screen_name VARCHAR(255)
                     )
                 """.trimIndent()
 
@@ -65,14 +66,14 @@ object DatabaseInitializer {
                 val insertSql = """
                     INSERT INTO screening (movie_id, start_date_time)
                     VALUES
-                        (1, 2025-09-20 10:20:00)
-                        (1, 2025-09-20 13:00:00)
-                        (1, 2025-09-20 15:40:00)
-                        (1, 2025-09-20 20:10:00)
-                        (2, 2025-09-20 13:30:00)
-                        (2, 2025-09-20 16:00:00)
-                        (3, 2025-09-20 09:50:00)
-                        (4, 2025-09-20 21:00:00)
+                        (1, 2025-09-20 10:20:00, '1관')
+                        (1, 2025-09-20 13:00:00, '1관')
+                        (1, 2025-09-20 15:40:00, '1관')
+                        (1, 2025-09-20 20:10:00, '1관')
+                        (2, 2025-09-20 13:30:00, '2관')
+                        (2, 2025-09-20 16:00:00, '2관')
+                        (3, 2025-09-20 09:50:00, '3관')
+                        (4, 2025-09-20 21:00:00, '3관')
                 """.trimIndent()
 
                 insertStatement.execute(insertSql)
