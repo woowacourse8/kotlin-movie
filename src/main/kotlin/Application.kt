@@ -5,7 +5,7 @@ import view.OutputView
 
 fun main() {
     MovieReservationController(
-        screeningRepo = InMemoryScreeningRepository(),
+        screeningRepository = InMemoryScreeningRepository(),
         inputView = InputView,
         outputView = OutputView,
     ).run()

@@ -41,7 +41,48 @@ class JdbcMovieRepository(
     }
 
     override fun findById(id: Long): Movie? {
-        val movies = getMovies()
-        return movies.findById(id)
+        val connection = DatabaseConnectionFactory.createConnection(isLocal)
+
+        connection.use { conn ->
+            val sql = "SELECT * FROM movie WHERE id = ?"
+
+            conn.prepareStatement(sql).use { pStatement ->
+                pStatement.setLong(1, id)
+
+                val resultSet = pStatement.executeQuery()
+
+                if (resultSet.next()) {
+                    return Movie(
+                        id = resultSet.getLong("id"),
+                        title = resultSet.getString("title"),
+                        runningTime = RunningTime(resultSet.getLong("running_time"))
+                    )
+                }
+            }
+        }
+        return null
+    }
+
+    override fun findByTitle(title: String): Movie? {
+        val connection = DatabaseConnectionFactory.createConnection(isLocal)
+
+        connection.use { conn ->
+            val sql = "SELECT * FROM movie WHERE title = ?"
+
+            conn.prepareStatement(sql).use { pStatement ->
+                pStatement.setString(1, title)
+
+                val resultSet = pStatement.executeQuery()
+
+                if (resultSet.next()) {
+                    return Movie(
+                        id = resultSet.getLong("id"),
+                        title = resultSet.getString("title"),
+                        runningTime = RunningTime(resultSet.getLong("running_time"))
+                    )
+                }
+            }
+        }
+        return null
     }
 }

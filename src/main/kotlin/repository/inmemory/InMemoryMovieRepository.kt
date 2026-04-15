@@ -11,10 +11,11 @@ object InMemoryMovieRepository : MovieRepository {
     val IRON_MAN = Movie(title = "아이언맨", runningTime = RunningTime(130))
     val ROBOT_DREAM = Movie(title = "로봇 드림", runningTime = RunningTime(110))
 
+    private val movies = getMovies()
+
     override fun getMovies(): Movies = Movies(listOf(F1_THE_MOVIE, TOY_STORY, IRON_MAN, ROBOT_DREAM))
 
-    override fun findById(id: Long): Movie? {
-        val movies = getMovies()
-        return movies.findById(id)
-    }
+    override fun findById(id: Long): Movie? = movies.findById(id)
+
+    override fun findByTitle(title: String): Movie? = movies.findByTitle(title)
 }

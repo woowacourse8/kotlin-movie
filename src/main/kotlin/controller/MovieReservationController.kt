@@ -9,14 +9,20 @@ import model.policy.TimeDiscountPolicy
 import model.reservation.Reservation
 import model.reservation.Reservations
 import model.screening.Screening
+import model.screening.ScreeningSeatMap
 import model.screening.Screenings
-import repository.inmemory.InMemoryMovieRepository
-import repository.inmemory.InMemoryScreeningRepository
+import repository.MovieRepository
+import repository.ReservationRepository
+import repository.ReservedSeatRepository
+import repository.ScreeningRepository
 import view.InputView
 import view.OutputView
 
 class MovieReservationController(
-    private val screeningRepo: InMemoryScreeningRepository,
+    private val screeningRepository: ScreeningRepository,
+    private val movieRepository: MovieRepository,
+    private val reservationRepository: ReservationRepository,
+    private val reservedSeatRepository: ReservedSeatRepository,
     private val inputView: InputView,
     private val outputView: OutputView,
 ) {
@@ -41,6 +47,9 @@ class MovieReservationController(
 
         // 예매 완료 전체 출력
         outputView.printReceipt(reservations, payResult)
+
+        // 레포지터리에 저장
+        save(reservations)
     }
 
     private fun makeCart(): Reservations {
@@ -48,7 +57,6 @@ class MovieReservationController(
 
         do {
             val reservation = makeReservation(reservations)
-            screeningRepo.update(reservation.screening)
             reservations = reservations.add(reservation)
             outputView.printCartItem(reservation)
         } while (inputView.readAddMoreMovie())
@@ -86,32 +94,44 @@ class MovieReservationController(
     private fun searchMovie(): Movie {
         while (true) {
             val title = inputView.readMovieTitle()
-            val movie = InMemoryMovieRepository.getMovies().findByTitle(title)
+            val movie = movieRepository.findByTitle(title)
             if (movie != null) return movie
             outputView.printMovieNotSearch()
         }
     }
 
-    private fun searchScreenings(movie: Movie): Screenings =
-        retryUntilValid {
-            val date = inputView.readDate()
-            val screenings = screeningRepo.findBy(movie, date)
-            if (screenings.isEmpty()) throw IllegalArgumentException("해당 날짜의 상영 목록이 없습니다.")
-            screenings
-        }
+    private fun searchScreenings(movie: Movie): Screenings = retryUntilValid {
+        val date = inputView.readDate()
+        val initialScreenings = screeningRepository.findBy(movie, date)
+        if (initialScreenings.isEmpty()) throw IllegalArgumentException("해당 날짜의 상영 목록이 없습니다.")
 
-    fun selectScreening(
+        val updatedScreeningList = initialScreenings.map { screening ->
+            val reservedSeats = reservedSeatRepository.findSeatsByScreening(screening)
+            val updateSeatMap = ScreeningSeatMap(screening.seatMap.screen, reservedSeats)
+            screening.copy(seatMap = updateSeatMap)
+        }
+        Screenings(updatedScreeningList)
+    }
+
+    private fun selectScreening(
         screenings: Screenings,
         currentReservations: Reservations,
-    ): Screening =
-        retryUntilValid {
-            val index = inputView.readScreeningNumber() - 1
-            val screening =
-                screenings.elementAtOrNull(index)
-                    ?: throw IllegalArgumentException("없는 상영 번호입니다.")
-            if (currentReservations.hasOverlappingWith(screening)) throw IllegalArgumentException("선택하신 상영 시간이 겹칩니다. 다른 시간을 선택해 주세요.")
-            screening
+    ): Screening = retryUntilValid {
+        val index = inputView.readScreeningNumber() - 1
+        val screening =
+            screenings.elementAtOrNull(index)
+                ?: throw IllegalArgumentException("없는 상영 번호입니다.")
+        if (currentReservations.hasOverlappingWith(screening)) throw IllegalArgumentException("선택하신 상영 시간이 겹칩니다. 다른 시간을 선택해 주세요.")
+        screening
+    }
+
+    private fun save(reservations: Reservations) {
+        reservations.forEach { reservation ->
+            reservationRepository.save(reservation)
+            reservedSeatRepository.save(reservation.screening, reservation.seats)
         }
+    }
+
 
     private fun <T> retryUntilValid(action: () -> T): T {
         while (true) {
