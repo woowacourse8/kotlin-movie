@@ -61,7 +61,7 @@ class JdbcReservationRepository(
                         "DB에 저장된 회차 아이디($screeningId)를 찾을 수 없습니다."
                     }
                     val seatNumbers = seatsString.split(",").map { it.trim() }
-                        .map { SeatNumber(it[0], it[1].digitToInt()) }
+                        .map { SeatNumber(it[0], it.substring(1).toInt()) }
 
                     val seats = Seats(seatNumbers.map {
                         screening.seatMap.screen.seats.findSeat(it)

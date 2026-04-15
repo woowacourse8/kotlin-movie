@@ -17,7 +17,7 @@
 - [x] ReservationRepository:
     - 신규 예매 내역(결제 완료된 예약)을 데이터베이스(Reservation 테이블)에 저장(INSERT)
     - 시간 겹침 검증 등을 위해 기존 예매 내역을 조회(SELECT)하여 반환
-- [ ] ReservedSeatRepository: 예매 시 선택된 좌석들을 예약된 좌석(ReservedSeats 테이블)으로 저장하고, 특정 상영 회차의 예약 완료 좌석 목록을
+- [x] ReservedSeatRepository: 예매 시 선택된 좌석들을 예약된 좌석(ReservedSeats 테이블)으로 저장하고, 특정 상영 회차의 예약 완료 좌석 목록을
   조회
 
 ### 도메인 및 컨트롤러 연동
