@@ -1,5 +1,49 @@
 [현재 작업: 3 & 4단계 구현 중]
 
+# 🚀 4단계 - 영화 예매(프레임워크)
+
+## 4단계 기능 목록
+
+### 환경 및 인프라 설정
+- [x] Spring Boot Web 관련 의존성 추가 (`spring-boot-starter-web`, Jackson 등)
+- [ ] 스프링 부트 애플리케이션 엔트리 포인트(`@SpringBootApplication`) 구성
+
+### HTTP API 계층 (Controller & DTO) 구현
+- [ ] 영화 및 상영 목록 조회 API (`GET /api/movies`)
+  - [ ] 데이터베이스(또는 저장소)에 있는 전체 영화 목록을 조회하여 JSON 응답 구조로 반환
+  - [ ] 각 영화별 상영 회차(Screening) 목록을 포함하며, 시작 시간(`startAt`)과 상영 길이를 바탕으로 계산된 종료 시간(`endAt`)을 함께 응답
+- [ ] 영화 예매 생성 API (`POST /api/reservations`)
+  - [ ] 상영 회차 ID(`screeningId`), 선택 좌석 리스트(`seats`), 사용 포인트(`usedPoints`), 결제 수단(`paymentMethod`)을 JSON 형식으로 요청받음
+  - [ ] 요청 데이터를 기반으로 기존 예매 도메인 로직을 호출하여 예매 처리 및 최종 결제 금액 계산
+  - [ ] 예매 성공 시 새로 생성된 예매 ID(`reservationId`), 입력받은 예약 내역, 결제 금액(`totalPrice`)을 포함해 `201 Created` 상태 코드로 응답
+- [ ] 글로벌 예외 처리 (Exception Handling)
+  - [ ] 클라이언트의 잘못된 요청에 대해 적절한 HTTP 상태 코드(예: `400 Bad Request`, `404 Not Found` 등)와 JSON 에러 응답을 일관되게 반환
+  - [ ] (예: 형식이 안 맞는 요청, 기예약 좌석 선택, 없는 상영 회차 조회 등)
+
+### 아키텍처 및 도메인 연동
+- [ ] API 요청/응답을 위한 DTO(Data Transfer Object)를 정의하여 외부 인터페이스와 핵심 도메인 간의 결합도 분리
+- [ ] 기존 코어 비즈니스 로직(1, 2단계에서 만든 영화 도메인, 할인/결제 정책 등)의 변경을 최소화하며 웹 계층과 자연스럽게 연결
+- [ ] 트랜잭션 등 필요에 따라 서비스(Service) 계층을 도입하여 Controller와 Repository 사이의 흐름 제어
+
+## 테스트 명세 (HTTP API)
+
+### 환경 및 설정
+- `@SpringBootTest`와 `RestTestClient`를 활용하여 실제 서버와 유사한 환경(Random Port)에서 End-to-End API 테스트 수행
+
+### API 통합 테스트 (RestTestClient)
+- 영화 목록 조회 API
+  - 정상적으로 영화 목록을 조회하면 `200 OK` 상태 코드를 반환한다.
+  - 응답 본문의 JSON 구조(`$.movies`)가 배열 형태이며, 기대하는 영화 정보와 계산된 종료 시간이 올바르게 포함되어 있는지 검증한다.
+- 예매 생성 API
+  - 올바른 요청 데이터로 예매를 진행하면 `201 Created` 상태 코드를 반환한다.
+  - 응답 본문에 생성된 `reservationId`와 계산된 `totalPrice`가 누락 없이 올바르게 존재하는지 검증한다.
+- 예외 상황 (실패 케이스) 테스트
+  - 이미 예약이 완료된 좌석에 대해 예매를 요청하면 적절한 오류 상태 코드(예: `400 Bad Request`)를 반환한다.
+  - 데이터베이스에 존재하지 않는 상영 회차(`screeningId`)로 예매를 요청하면 적절한 오류 상태 코드(예: `404 Not Found` 또는 `400`)를 반환한다.
+  - JSON 요청 형식이 잘못되었거나 필수 값이 누락된 경우 적절한 상태 코드를 반환한다.
+
+---
+
 # 🚀 3단계 - 영화 예매(데이터 베이스)
 
 ## 3단계 기능 목록
