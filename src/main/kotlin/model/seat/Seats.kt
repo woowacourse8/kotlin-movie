@@ -4,8 +4,10 @@ import model.Money
 
 class Seats(
     seats: List<Seat>,
-) {
+) : Iterable<Seat> {
     private val value = seats.toList()
+
+    override fun iterator(): Iterator<Seat> = value.iterator()
 
     val seatCount: Int = seats.size
     val seatNumbers: List<SeatNumber> = seats.map { it.seatNumber }

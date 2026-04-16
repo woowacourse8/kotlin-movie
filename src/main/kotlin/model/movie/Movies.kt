@@ -2,8 +2,10 @@ package model.movie
 
 class Movies(
     movies: List<Movie>,
-) {
+) : Iterable<Movie> {
     private val value = movies.toList()
+
+    override fun iterator(): Iterator<Movie> = value.iterator()
 
     init {
         require(this.value.isNotEmpty()) { "영화 목록이 비어있으면 안됩니다." }
