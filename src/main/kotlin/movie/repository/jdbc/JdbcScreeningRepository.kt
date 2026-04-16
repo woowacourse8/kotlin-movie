@@ -9,7 +9,6 @@ import movie.repository.MovieRepository
 import movie.repository.ScreenRepository
 import movie.repository.ScreeningRepository
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class JdbcScreeningRepository(
     private val isLocal: Boolean,
@@ -132,7 +131,7 @@ class JdbcScreeningRepository(
                             movie = movie,
                             startDateTime = startDateTime,
                             seatMap = ScreeningSeatMap(screen),
-                        )
+                        ),
                     )
                 }
             }

@@ -3,7 +3,7 @@ package movie.api.dto
 data class ReservationRequest(
     val reservations: List<ScreeningReservationRequest>,
     val usedPoints: Int,
-    val paymentMethod: String
+    val paymentMethod: String,
 )
 
 data class ScreeningReservationRequest(
@@ -16,5 +16,5 @@ data class ReservationResponse(
     val reservations: List<ScreeningReservationRequest>,
     val usedPoints: Int,
     val paymentMethod: String,
-    val totalPrice: Int
+    val totalPrice: Int,
 )

@@ -27,42 +27,47 @@ import java.util.concurrent.atomic.AtomicLong
 class ReservationController {
     val screenRepository = InMemoryScreenRepository
     val movieRepository = JdbcMovieRepository(isLocal = false)
-    val screeningRepository = JdbcScreeningRepository(
-        isLocal = false,
-        screenRepository = screenRepository,
-        movieRepository = movieRepository
-    )
+    val screeningRepository =
+        JdbcScreeningRepository(
+            isLocal = false,
+            screenRepository = screenRepository,
+            movieRepository = movieRepository,
+        )
     val reservationRepository =
         JdbcReservationRepository(isLocal = false, screeningRepository = screeningRepository)
     val reservedSeatRepository = JdbcReservedSeatRepository(isLocal = false)
 
     @PostMapping("/api/reservations")
     fun createReservation(
-        @RequestBody request: ReservationRequest
+        @RequestBody request: ReservationRequest,
     ): ResponseEntity<ReservationResponse> {
-        val reservationList = request.reservations.map { reservationDto ->
-            val screening =
-                requireNotNull(screeningRepository.findById(reservationDto.screeningId)) { "DB에 찾는 회차 아이디가 없습니다." }
+        val reservationList =
+            request.reservations.map { reservationDto ->
+                val screening =
+                    requireNotNull(screeningRepository.findById(reservationDto.screeningId)) { "DB에 찾는 회차 아이디가 없습니다." }
 
-            // Load already reserved seats from DB
-            val reservedSeatsInDb = reservedSeatRepository.findSeatsByScreening(screening)
-            val updatedScreening = screening.copy(
-                seatMap = movie.model.screening.ScreeningSeatMap(
-                    screen = screening.seatMap.screen,
-                    reservedSeats = reservedSeatsInDb
-                )
-            )
+                // Load already reserved seats from DB
+                val reservedSeatsInDb = reservedSeatRepository.findSeatsByScreening(screening)
+                val updatedScreening =
+                    screening.copy(
+                        seatMap =
+                            movie.model.screening.ScreeningSeatMap(
+                                screen = screening.seatMap.screen,
+                                reservedSeats = reservedSeatsInDb,
+                            ),
+                    )
 
-            val seatNumbers = reservationDto.seats.map {
-                SeatNumber(
-                    row = it[0],
-                    column = it.substring(1).toInt()
-                )
+                val seatNumbers =
+                    reservationDto.seats.map {
+                        SeatNumber(
+                            row = it[0],
+                            column = it.substring(1).toInt(),
+                        )
+                    }
+
+                // This will throw IllegalArgumentException if seats are already reserved or duplicate
+                updatedScreening.reserve(seatNumbers)
             }
-
-            // This will throw IllegalArgumentException if seats are already reserved or duplicate
-            updatedScreening.reserve(seatNumbers)
-        }
 
         val currentReservations = Reservations(reservationList)
 
@@ -71,29 +76,32 @@ class ReservationController {
         val paymentSystem = PaymentSystem()
 
         val discountedPrice = discountSystem.discountPrice(currentReservations)
-        val paymentMethod = when (request.paymentMethod) {
-            "CREDIT_CARD" -> Card
-            "CASH" -> Cash
-            else -> throw IllegalArgumentException("결제 방식 입력이 잘못됐습니다.(ex. CREDIT_CARD)")
-        }
-        val payResult = paymentSystem.pay(
-            paymentMethod = paymentMethod,
-            discountedPrice = discountedPrice,
-            point = Point(request.usedPoints)
-        )
+        val paymentMethod =
+            when (request.paymentMethod) {
+                "CREDIT_CARD" -> Card
+                "CASH" -> Cash
+                else -> throw IllegalArgumentException("결제 방식 입력이 잘못됐습니다.(ex. CREDIT_CARD)")
+            }
+        val payResult =
+            paymentSystem.pay(
+                paymentMethod = paymentMethod,
+                discountedPrice = discountedPrice,
+                point = Point(request.usedPoints),
+            )
 
         currentReservations.forEach { reservation ->
             reservationRepository.save(reservation)
             reservedSeatRepository.save(reservation.screening, reservation.seats)
         }
 
-        val responseDto = ReservationResponse(
-            reservationId = id.getAndIncrement(),
-            reservations = request.reservations,
-            usedPoints = request.usedPoints,
-            paymentMethod = request.paymentMethod,
-            totalPrice = payResult.finalPrice.value
-        )
+        val responseDto =
+            ReservationResponse(
+                reservationId = id.getAndIncrement(),
+                reservations = request.reservations,
+                usedPoints = request.usedPoints,
+                paymentMethod = request.paymentMethod,
+                totalPrice = payResult.finalPrice.value,
+            )
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto)
     }
