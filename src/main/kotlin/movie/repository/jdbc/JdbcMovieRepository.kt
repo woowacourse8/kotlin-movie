@@ -15,10 +15,7 @@ class JdbcMovieRepository(
 
         connection.use { conn ->
             conn.createStatement().use { statement ->
-                val sql =
-                    """
-                    SELECT * FROM movie
-                    """.trimIndent()
+                val sql = "SELECT * FROM movie"
 
                 val resultSet = statement.executeQuery(sql)
 

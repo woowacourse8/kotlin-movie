@@ -9,9 +9,9 @@
 - [x] 스프링 부트 애플리케이션 엔트리 포인트(`@SpringBootApplication`) 구성
 
 ### HTTP API 계층 (Controller & DTO) 구현
-- [ ] 영화 및 상영 목록 조회 API (`GET /api/movies`)
-  - [ ] 데이터베이스(또는 저장소)에 있는 전체 영화 목록을 조회하여 JSON 응답 구조로 반환
-  - [ ] 각 영화별 상영 회차(Screening) 목록을 포함하며, 시작 시간(`startAt`)과 상영 길이를 바탕으로 계산된 종료 시간(`endAt`)을 함께 응답
+- [x] 영화 및 상영 목록 조회 API (`GET /api/movies`)
+  - [x] 데이터베이스(또는 저장소)에 있는 전체 영화 목록을 조회하여 JSON 응답 구조로 반환
+  - [x] 각 영화별 상영 회차(Screening) 목록을 포함하며, 시작 시간(`startAt`)과 상영 길이를 바탕으로 계산된 종료 시간(`endAt`)을 함께 응답
 - [ ] 영화 예매 생성 API (`POST /api/reservations`)
   - [ ] 상영 회차 ID(`screeningId`), 선택 좌석 리스트(`seats`), 사용 포인트(`usedPoints`), 결제 수단(`paymentMethod`)을 JSON 형식으로 요청받음
   - [ ] 요청 데이터를 기반으로 기존 예매 도메인 로직을 호출하여 예매 처리 및 최종 결제 금액 계산

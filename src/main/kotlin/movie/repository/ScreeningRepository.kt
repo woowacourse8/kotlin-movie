@@ -12,4 +12,6 @@ interface ScreeningRepository {
     ): Screenings
 
     fun findById(id: Long): Screening?
+
+    fun getAllScreenings(): Screenings
 }

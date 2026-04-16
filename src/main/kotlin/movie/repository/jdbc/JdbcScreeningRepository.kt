@@ -43,8 +43,7 @@ class JdbcScreeningRepository(
 
                 while (resultSet.next()) {
                     val id = resultSet.getLong("id")
-                    val startDateTime =
-                        resultSet.getObject("start_date_time", LocalDateTime::class.java)
+                    val startDateTime = resultSet.getTimestamp("start_date_time").toLocalDateTime()
                     val screenName = resultSet.getString("screen_name")
 
                     val screen =
@@ -88,8 +87,7 @@ class JdbcScreeningRepository(
                         requireNotNull(movieRepository.findById(movieId)) {
                             "영화 DB에 영화 아이디($movieId)인 영화가 없습니다."
                         }
-                    val startDateTime =
-                        resultSet.getObject("start_date_time", LocalDateTime::class.java)
+                    val startDateTime = resultSet.getTimestamp("start_date_time").toLocalDateTime()
                     val screenName = resultSet.getString("screen_name")
                     val screen =
                         requireNotNull(screenRepository.findByName(screenName)) {
@@ -106,5 +104,39 @@ class JdbcScreeningRepository(
             }
         }
         return null
+    }
+
+    override fun getAllScreenings(): Screenings {
+        val connection = DatabaseConnectionFactory.createConnection(isLocal)
+        val screenings = mutableListOf<Screening>()
+
+        connection.use { conn ->
+            conn.createStatement().use { statement ->
+                val sql = "SELECT * FROM screening"
+
+                val resultSet = statement.executeQuery(sql)
+
+                while (resultSet.next()) {
+                    val id = resultSet.getLong("id")
+                    val movieId = resultSet.getLong("movie_id")
+                    val startDateTime = resultSet.getTimestamp("start_date_time").toLocalDateTime()
+                    val screenName = resultSet.getString("screen_name")
+                    val movie =
+                        requireNotNull(movieRepository.findById(movieId)) { "movie DB에 해당 아이디($movieId)를 가진 영화가 없습니다." }
+                    val screen =
+                        requireNotNull(screenRepository.findByName(screenName)) { "screen DB 에 해당 스크린 이름($screenName)이 없습니다." }
+
+                    screenings.add(
+                        Screening(
+                            id = id,
+                            movie = movie,
+                            startDateTime = startDateTime,
+                            seatMap = ScreeningSeatMap(screen),
+                        )
+                    )
+                }
+            }
+        }
+        return Screenings(screenings)
     }
 }

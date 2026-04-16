@@ -23,6 +23,8 @@ class InMemoryScreeningRepository(
 
     override fun findById(id: Long): Screening? = screenings.find { it.id == id }
 
+    override fun getAllScreenings(): Screenings = Screenings(screenings.toList())
+
     fun update(newScreening: Screening) {
         screenings =
             Screenings(screenings.map { if (it.isSameScreening(newScreening)) newScreening else it })
