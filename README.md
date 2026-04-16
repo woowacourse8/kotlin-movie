@@ -16,9 +16,9 @@
   - [x] 상영 회차 ID(`screeningId`), 선택 좌석 리스트(`seats`), 사용 포인트(`usedPoints`), 결제 수단(`paymentMethod`)을 JSON 형식으로 요청받음
   - [x] 요청 데이터를 기반으로 기존 예매 도메인 로직을 호출하여 예매 처리 및 최종 결제 금액 계산
   - [x] 예매 성공 시 새로 생성된 예매 ID(`reservationId`), 입력받은 예약 내역, 결제 금액(`totalPrice`)을 포함해 `201 Created` 상태 코드로 응답
-- [ ] 글로벌 예외 처리 (Exception Handling)
-  - [ ] 클라이언트의 잘못된 요청에 대해 적절한 HTTP 상태 코드(예: `400 Bad Request`, `404 Not Found` 등)와 JSON 에러 응답을 일관되게 반환
-  - [ ] (예: 형식이 안 맞는 요청, 기예약 좌석 선택, 없는 상영 회차 조회 등)
+- [x] 글로벌 예외 처리 (Exception Handling)
+  - [x] 클라이언트의 잘못된 요청에 대해 적절한 HTTP 상태 코드(예: `400 Bad Request`, `404 Not Found` 등)와 JSON 에러 응답을 일관되게 반환
+  - [x] (예: 형식이 안 맞는 요청, 기예약 좌석 선택, 없는 상영 회차 조회 등)
 
 ## 테스트 명세 (HTTP API)
 
