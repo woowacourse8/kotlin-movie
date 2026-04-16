@@ -119,9 +119,13 @@ class MovieReservationController(
     ): Screening = retryUntilValid {
         val index = inputView.readScreeningNumber() - 1
         val screening =
-            screenings.elementAtOrNull(index)
-                ?: throw IllegalArgumentException("없는 상영 번호입니다.")
-        if (currentReservations.hasOverlappingWith(screening)) throw IllegalArgumentException("선택하신 상영 시간이 겹칩니다. 다른 시간을 선택해 주세요.")
+            screenings.elementAtOrNull(index) ?: throw IllegalArgumentException("없는 상영 번호입니다.")
+
+        val reservationsInRepo = reservationRepository.findByDate(screening.showDate)
+
+        if (currentReservations.hasOverlappingWith(screening) or
+            reservationsInRepo.hasOverlappingWith(screening)
+        ) throw IllegalArgumentException("선택하신 상영 시간이 겹칩니다. 다른 시간을 선택해 주세요.")
         screening
     }
 
