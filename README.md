@@ -6,7 +6,7 @@
 
 ### 환경 및 인프라 설정
 - [x] Spring Boot Web 관련 의존성 추가 (`spring-boot-starter-web`, Jackson 등)
-- [ ] 스프링 부트 애플리케이션 엔트리 포인트(`@SpringBootApplication`) 구성
+- [x] 스프링 부트 애플리케이션 엔트리 포인트(`@SpringBootApplication`) 구성
 
 ### HTTP API 계층 (Controller & DTO) 구현
 - [ ] 영화 및 상영 목록 조회 API (`GET /api/movies`)
