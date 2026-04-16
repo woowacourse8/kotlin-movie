@@ -9,13 +9,12 @@ import movie.model.payment.PaymentSystem
 import movie.model.policy.DiscountSystem
 import movie.model.policy.MovieDayDiscountPolicy
 import movie.model.policy.TimeDiscountPolicy
-import movie.model.reservation.Reservation
 import movie.model.reservation.Reservations
 import movie.model.seat.SeatNumber
-import movie.model.seat.Seats
 import movie.repository.inmemory.InMemoryScreenRepository
 import movie.repository.jdbc.JdbcMovieRepository
 import movie.repository.jdbc.JdbcReservationRepository
+import movie.repository.jdbc.JdbcReservedSeatRepository
 import movie.repository.jdbc.JdbcScreeningRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,6 +34,7 @@ class ReservationController {
     )
     val reservationRepository =
         JdbcReservationRepository(isLocal = false, screeningRepository = screeningRepository)
+    val reservedSeatRepository = JdbcReservedSeatRepository(isLocal = false)
 
     @PostMapping("/api/reservations")
     fun createReservation(
@@ -43,15 +43,25 @@ class ReservationController {
         val reservationList = request.reservations.map { reservationDto ->
             val screening =
                 requireNotNull(screeningRepository.findById(reservationDto.screeningId)) { "DB에 찾는 회차 아이디가 없습니다." }
+
+            // Load already reserved seats from DB
+            val reservedSeatsInDb = reservedSeatRepository.findSeatsByScreening(screening)
+            val updatedScreening = screening.copy(
+                seatMap = movie.model.screening.ScreeningSeatMap(
+                    screen = screening.seatMap.screen,
+                    reservedSeats = reservedSeatsInDb
+                )
+            )
+
             val seatNumbers = reservationDto.seats.map {
                 SeatNumber(
                     row = it[0],
                     column = it.substring(1).toInt()
                 )
             }
-            val seats = Seats(seatNumbers.map { screening.seatMap.screen.seats.findSeat(it) })
 
-            Reservation(screening = screening, seats = seats)
+            // This will throw IllegalArgumentException if seats are already reserved or duplicate
+            updatedScreening.reserve(seatNumbers)
         }
 
         val currentReservations = Reservations(reservationList)
@@ -74,6 +84,7 @@ class ReservationController {
 
         currentReservations.forEach { reservation ->
             reservationRepository.save(reservation)
+            reservedSeatRepository.save(reservation.screening, reservation.seats)
         }
 
         val responseDto = ReservationResponse(
